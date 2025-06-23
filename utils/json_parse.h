@@ -1,0 +1,10 @@
+//
+// Created by Guangyu He on 23.06.25.
+//
+
+#ifndef JSON_PARSE_H
+#define JSON_PARSE_H
+
+int parse_json_response(const char* response, IpGeoInfo* info);
+
+#endif //JSON_PARSE_H
