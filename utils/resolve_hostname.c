@@ -6,13 +6,12 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 #include "resolve_hostname.h"
 
-#include <stdbool.h>
 
-
-int resolve_hostname(const char* hostname, char* ip)
+bool resolve_hostname(const char* hostname, char* ip)
 {
     // Only support IPv4
     struct addrinfo hints, *result;
@@ -21,24 +20,20 @@ int resolve_hostname(const char* hostname, char* ip)
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
 
-    if (getaddrinfo(hostname, NULL, &hints, &result) != 0)
-    {
-        return 1;
-    }
+    if (getaddrinfo(hostname, NULL, &hints, &result)) return false;
 
     const struct sockaddr_in* ipv4 = (struct sockaddr_in*)result->ai_addr;
     inet_ntop(AF_INET, &(ipv4->sin_addr), ip, INET_ADDRSTRLEN);
-
     freeaddrinfo(result);
 
-    return 0;
+    return true;
 }
 
 bool is_valid_domain(const char* domain)
 {
     const size_t len = strlen(domain);
-    if (len == 0 || len > 253) return false;
 
+    if (len == 0 || len > 253) return false;
     if (domain[0] == '.' || domain[len - 1] == '.') return false;
 
     int label_len = 0;
@@ -71,7 +66,6 @@ bool is_valid_domain(const char* domain)
     }
 
     if (label_len == 0 || label_len > 63) return false;
-
     if (has_alpha == 0) return false;
 
     return true;

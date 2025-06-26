@@ -45,7 +45,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
         fprintf(stderr, "IP invalid: %s\n", ip);
         return 0;
     }
-    if (resolve_hostname(ip, ip_str) != 0)
+    if (!resolve_hostname(ip, ip_str))
     {
         fprintf(stderr, "Domain resolve failed: %s\n", ip);
         return 0;
