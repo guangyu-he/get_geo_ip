@@ -31,26 +31,23 @@ static size_t write_callback(const void* contents, const size_t size, size_t nme
 }
 
 
-int get_ip_info(const char* ip, IpGeoInfo* info)
+bool get_ip_info(const char* ip, IpGeoInfo* info)
 {
     // init struct
     memset(info, 0, sizeof(IpGeoInfo));
-
-    static char ip_str[INET_ADDRSTRLEN];
-    const char* target_ip = ip;
+    char ip_str[INET_ADDRSTRLEN];
 
     // validate ip
     if (!validate_ip_address(ip))
     {
         fprintf(stderr, "IP invalid: %s\n", ip);
-        return 0;
+        return false;
     }
     if (!resolve_hostname(ip, ip_str))
     {
         fprintf(stderr, "Domain resolve failed: %s\n", ip);
-        return 0;
+        return false;
     }
-    target_ip = ip_str;
 
     // init libcurl
     HttpResponse response = {0};
@@ -58,12 +55,12 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
     if (!curl)
     {
         fprintf(stderr, "curl init failed\n");
-        return 0;
+        return false;
     }
 
     // build url
     char url[256];
-    snprintf(url, sizeof(url), "https://ipapi.co/%s/json/", target_ip);
+    snprintf(url, sizeof(url), "https://ipapi.co/%s/json/", ip_str);
 
     // set url options
     curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -81,7 +78,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
         fprintf(stderr, "HTTP request failed: %s\n", curl_easy_strerror(res));
         curl_easy_cleanup(curl);
         if (response.data) free(response.data);
-        return 0;
+        return false;
     }
 
     // check response
@@ -93,7 +90,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
         fprintf(stderr, "HTTP response code: %ld\n", response_code);
         curl_easy_cleanup(curl);
         if (response.data) free(response.data);
-        return 0;
+        return false;
     }
 
     curl_easy_cleanup(curl);
@@ -108,13 +105,11 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
 
     if (parse_success)
     {
-        info->success = 1;
-        return 1;
+        info->success = true;
+        return true;
     }
-    else
-    {
-        return 0;
-    }
+
+    return false;
 }
 
 void print_ip_info(const IpGeoInfo* info)

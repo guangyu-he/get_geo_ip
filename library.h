@@ -1,9 +1,6 @@
 #ifndef GET_GEO_IP_LIBRARY_H
 #define GET_GEO_IP_LIBRARY_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdbool.h>
 
 typedef struct
 {
@@ -22,10 +19,10 @@ typedef struct
     double latitude;
     double longitude;
     char org[128];
-    int success;
+    bool success;
 } IpGeoInfo;
 
-int get_ip_info(const char* ip, IpGeoInfo* info);
+bool get_ip_info(const char* ip, IpGeoInfo* info);
 void print_ip_info(const IpGeoInfo* info);
 
 #ifdef __cplusplus
