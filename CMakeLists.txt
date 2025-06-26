@@ -12,6 +12,8 @@ add_library(get_geo_ip_lib STATIC
         library.c
         utils/json_parse.c
         utils/validate_ip.c
+        utils/resolve_hostname.c
+        utils/resolve_hostname.h
 )
 
 
