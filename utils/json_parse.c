@@ -1,6 +1,3 @@
-//
-// Created by Guangyu He on 23.06.25.
-//
 #include <json-c/json.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,19 +6,17 @@
 #include "json_parse.h"
 
 
-// 解析JSON响应
 int parse_json_response(const char* json_data, IpGeoInfo* info)
 {
     json_object* root = json_tokener_parse(json_data);
     if (root == NULL)
     {
-        fprintf(stderr, "JSON解析失败\n");
+        fprintf(stderr, "Json parse failed\n");
         return 0;
     }
 
     json_object* obj;
 
-    // 解析各个字段
     if (json_object_object_get_ex(root, "ip", &obj))
     {
         const char* ip = json_object_get_string(obj);
@@ -81,13 +76,13 @@ int parse_json_response(const char* json_data, IpGeoInfo* info)
             snprintf(info->org, sizeof(info->org), "%s", org);
     }
 
-    // 检查是否有错误
     if (json_object_object_get_ex(root, "error", &obj))
     {
         const char* error = json_object_get_string(obj);
-        if (error && strlen(error) > 0)
+        const char* reason = json_object_get_string(json_object_object_get(root, "reason"));
+        if (error && reason)
         {
-            fprintf(stderr, "API返回错误: %s\n", error);
+            fprintf(stderr, "API error: %s\n", reason);
             json_object_put(root);
             return 0;
         }

@@ -10,7 +10,6 @@
 #include "utils/validate_ip.h"
 
 
-// 回调函数，用于接收HTTP响应数据
 static size_t write_callback(const void* contents, const size_t size, size_t nmemb, HttpResponse* response)
 {
     size_t total_size = size * nmemb;
@@ -18,7 +17,7 @@ static size_t write_callback(const void* contents, const size_t size, size_t nme
 
     if (ptr == NULL)
     {
-        printf("内存分配失败!\n");
+        printf("Memory allocation failed!\n");
         return 0;
     }
 
@@ -81,7 +80,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
 
     if (response_code != 200)
     {
-        fprintf(stderr, "API请求失败，状态码: %ld\n", response_code);
+        fprintf(stderr, "HTTP response code: %ld\n", response_code);
         curl_easy_cleanup(curl);
         if (response.data) free(response.data);
         return 0;
@@ -89,7 +88,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
 
     curl_easy_cleanup(curl);
 
-    // 解析JSON响应
+    // parse response
     int parse_success = 0;
     if (response.data)
     {
@@ -108,22 +107,21 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
     }
 }
 
-// 打印IP地理信息
 void print_ip_info(const IpGeoInfo* info)
 {
     if (!info->success)
     {
-        printf("获取IP信息失败\n");
+        printf("Get IP info failed\n");
         return;
     }
 
-    printf("IP地理信息:\n");
-    printf("  IP地址: %s\n", info->ip);
-    printf("  城市: %s\n", info->city);
-    printf("  地区: %s\n", info->region);
-    printf("  国家: %s (%s)\n", info->country, info->country_code);
-    printf("  时区: %s\n", info->timezone);
-    printf("  纬度: %.6f\n", info->latitude);
-    printf("  经度: %.6f\n", info->longitude);
-    printf("  组织: %s\n", info->org);
+    printf("IP Geo Info:\n");
+    printf("  IP: %s\n", info->ip);
+    printf("  City: %s\n", info->city);
+    printf("  Region: %s\n", info->region);
+    printf("  Country: %s (%s)\n", info->country, info->country_code);
+    printf("  Timezone: %s\n", info->timezone);
+    printf("  Latitude: %.6f\n", info->latitude);
+    printf("  Longitude: %.6f\n", info->longitude);
+    printf("  Org: %s\n", info->org);
 }

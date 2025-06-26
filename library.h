@@ -5,14 +5,12 @@
 extern "C" {
 #endif
 
-// HTTP响应数据结构
 typedef struct
 {
     char* data;
     size_t size;
 } HttpResponse;
 
-// IP地理信息结构体
 typedef struct
 {
     char ip[16];
@@ -27,7 +25,6 @@ typedef struct
     int success;
 } IpGeoInfo;
 
-// 函数声明
 int get_ip_info(const char* ip, IpGeoInfo* info);
 void print_ip_info(const IpGeoInfo* info);
 

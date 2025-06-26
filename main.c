@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-    // 初始化libcurl
+    // init libcurl
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
     const char* test_ip = "8.8.8.8";
@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         test_ip = argv[1];
     }
 
-    printf("正在查询IP: %s\n", test_ip);
+    printf("Checking IP: %s\n", test_ip);
 
     IpGeoInfo info;
     if (get_ip_info(test_ip, &info))
@@ -23,10 +23,10 @@ int main(int argc, char* argv[])
     }
     else
     {
-        printf("查询失败\n");
+        printf("Check IP failed\n");
     }
 
-    // 清理libcurl
+    // Cleanup
     curl_global_cleanup();
 
     return 0;

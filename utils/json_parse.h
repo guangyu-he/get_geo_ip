@@ -1,7 +1,3 @@
-//
-// Created by Guangyu He on 23.06.25.
-//
-
 #ifndef JSON_PARSE_H
 #define JSON_PARSE_H
 
