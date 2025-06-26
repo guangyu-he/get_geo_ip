@@ -3,7 +3,7 @@
 #include <curl/curl.h>
 #include "library.h"
 
-int main(int argc, char* argv[])
+int main(const int argc, char* argv[])
 {
     // init libcurl
     curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -14,8 +14,6 @@ int main(int argc, char* argv[])
         test_ip = argv[1];
     }
 
-    printf("Checking IP: %s\n", test_ip);
-
     IpGeoInfo info;
     if (get_ip_info(test_ip, &info))
     {
@@ -23,7 +21,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        printf("Check IP failed\n");
+        fprintf(stderr, "Check IP failed\n");
     }
 
     // Cleanup
