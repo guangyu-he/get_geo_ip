@@ -8,6 +8,7 @@
 #include "library.h"
 #include "utils/json_parse.h"
 #include "utils/validate_ip.h"
+#include "utils/resolve_hostname.h"
 
 
 static size_t write_callback(const void* contents, const size_t size, size_t nmemb, HttpResponse* response)
@@ -35,12 +36,21 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
     // init struct
     memset(info, 0, sizeof(IpGeoInfo));
 
+    static char ip_str[INET_ADDRSTRLEN];
+    const char* target_ip = ip;
+
     // validate ip
     if (!validate_ip_address(ip))
     {
         fprintf(stderr, "IP invalid: %s\n", ip);
         return 0;
     }
+    if (resolve_hostname(ip, ip_str) != 0)
+    {
+        fprintf(stderr, "Domain resolve failed: %s\n", ip);
+        return 0;
+    }
+    target_ip = ip_str;
 
     // init libcurl
     HttpResponse response = {0};
@@ -53,7 +63,7 @@ int get_ip_info(const char* ip, IpGeoInfo* info)
 
     // build url
     char url[256];
-    snprintf(url, sizeof(url), "https://ipapi.co/%s/json/", ip);
+    snprintf(url, sizeof(url), "https://ipapi.co/%s/json/", target_ip);
 
     // set url options
     curl_easy_setopt(curl, CURLOPT_URL, url);

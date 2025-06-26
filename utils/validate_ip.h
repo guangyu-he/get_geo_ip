@@ -1,5 +1,6 @@
 #ifndef VALIDATE_IP_H
 #define VALIDATE_IP_H
+#include <stdbool.h>
 
-int validate_ip_address(const char* ip);
+bool validate_ip_address(const char* ip);
 #endif //VALIDATE_IP_H
